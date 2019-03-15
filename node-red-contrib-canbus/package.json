@@ -10,15 +10,15 @@
     "random-js": "1.0.x"
   },
   "author": {
-    "name": "Rajesh Sola",
-    "email": "rajeshsola@gmail.com"
+    "name": "Andrzej S",
+    "email": "morbiasz@gmail.com"
   },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rajeshsola/node-red-addons/node-red-contrib-canbus"
+    "url": "git+https://github.com/morbiasz/node-red-contrib-canbus"
   },
-  "homepage": "https://github.com/rajeshsola/node-red-addons/wiki",
+  "homepage": "https://github.com/morbiasz/node-red-addons/wiki",
   "keywords": [
     "node-red",
     "socketcan",

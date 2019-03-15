@@ -47,6 +47,8 @@ module.exports = function(RED) {
 			msg.channel=this.channel;
 			frame.canid=0;
 			frame.dlc=0;
+			frame.ext=false;
+			frame.remote=false;
 			if(msg.canid)
 			{
 				frame.canid=parseInt(msg.canid);
@@ -59,18 +61,38 @@ module.exports = function(RED) {
 			if(msg.payload && msg.payload.indexOf("#")!=-1 && frame.canid==0)
 			{
 				frame.canid=parseInt(msg.payload.split("#")[0]);
+				if(frame.canid >0x7FF)
+					frame.ext =true;
+				else
+					frame.ext =false;
+
 				frame.data=new Buffer(msg.payload.split("#")[1]);
 				frame.dlc=frame.data.length;
+				if(frame.data.length == 0)
+					frame.remote=true;
+				else
+					frame.remote=false;
 			}
 			else if(msg.payload) 
 			{
 				frame.data=new Buffer(msg.payload);
 				frame.dlc=frame.data.length;
+
+				if(frame.data.length == 0)
+					frame.remote=true;
+				else
+					frame.remote=false;
 			}
 			else if(this.payload)
 			{
 				frame.data=new Buffer(this.payload);
 				frame.dlc=frame.data.length;
+
+
+				if(frame.data.length == 0)
+					frame.remote=true;
+				else
+					frame.remote=false;
 			}
 			else	 //no msg.payload and this.data is empty
 			{
@@ -84,10 +106,11 @@ module.exports = function(RED) {
 			{
 				frame.canid=random.integer(1,4095);
 			}
-			node.warn("canid:"+frame.canid+",data:"+frame.data+",dlc:"+frame.dlc);
+			node.warn("canid:"+frame.canid+",data:"+frame.data+",dlc:"+frame.dlc+",remote:"+frame.remote,+",ext:"+frame.ext);
 			if(frame.dlc<=8)	//try-catch?
 				channel.send({ id: frame.canid,
-					ext: false,
+					ext: frame.ext,
+					remote: frame.remote,
 					data:frame.data });
 			else
 				node.warn("frame data is too long");
