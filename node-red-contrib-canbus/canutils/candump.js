@@ -33,7 +33,7 @@ module.exports = function(RED) {
 	try {
 		channel = can.createRawChannel(""+this.channel, true);
 	}catch(ex) { 
-		node.error("channel not found:"+this.channel);		
+		node.error("Nieznaleziono kanału:"+this.channel);		
 	}
 	if(channel) 
 	{

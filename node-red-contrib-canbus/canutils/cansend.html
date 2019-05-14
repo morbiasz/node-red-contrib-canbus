@@ -32,6 +32,17 @@
         <input type="text" id="node-input-payload" placeholder="Data">
     </div> 
     <br/>
+    <div class="form-row">
+        <label for="node-input-ext"><i class="fa fa-tasks"></i> Extended_frame</label>
+        <input type="checkbox" id="node-input-ext" placeholder="Extended frame">
+    </div> 
+    <br/>
+    <br/>
+    <div class="form-row">
+        <label for="node-input-remote"><i class="fa fa-tasks"></i> Remote_frame</label>
+        <input type="checkbox" id="node-input-remote" placeholder="Remote frame">
+    </div> 
+    <br/>
 </script>
 
 
@@ -55,7 +66,9 @@
 	color: '#a6bbcf',
         defaults: {             // defines the editable properties of the node
 	    config: {type:"canconfig",required:true},
-	    canid: {value:"128"},
+        canid: {value:"128"},
+        ext: {value:false},
+        remote: {value:false},
 	    payload : {value:""}
         },
         inputs:1,               // set the number of inputs - only 0 or 1

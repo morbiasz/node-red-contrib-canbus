@@ -19,7 +19,9 @@ module.exports = function(RED) {
    function CanConfigNode(n) {
 	RED.nodes.createNode(this,n);
 	this.channel = n.channel;
-	this.bitrate =n.bitrate;
+   this.bitrate =n.bitrate;
+   this.ext =n.ext;
+   this.remote =n.remote;
    }
    RED.nodes.registerType("canconfig",CanConfigNode);
   /*RED.httpAdmin.get("/canchannels", RED.auth.needsPermission('serial.read'), function(req,res)    {
