@@ -53,15 +53,11 @@ if(channel)
         if(msg.payload && msg.payload.indexOf("#")!=-1 && frame.canid==0)
         {
             frame.canid=parseInt(msg.payload.split("#")[0]);
-            if(frame.canid >0x7FF)
-                frame.ext =true;
-            else
-                frame.ext =false;
-
             var text = msg.payload.split("#")[1];
             if(text[0]=="R")
             {
                 console.log("Ramka remote");
+                frame.remote=true;
             }
             else
             {
@@ -97,16 +93,18 @@ if(channel)
         }
         else	 //no msg.payload and this.data is empty
         {
-            frame.dlc=random.integer(1,8);
-            frame.data=new Buffer(frame.dlc);
-            for(var i=0;i<frame.dlc;i++)
-                frame.data[i]=random.integer(65,90);
+            frame.remote=true;
+            //frame.dlc=random.integer(1,8);
+            //frame.data=new Buffer(frame.dlc);
+            //for(var i=0;i<frame.dlc;i++)
+               // frame.data[i]=random.integer(65,90);
         //random.integer(1,255),random.integer(48,57),random.integer(96,121)
         }
         if(frame.canid==0)   //canid is not yet set
         {
             frame.canid=random.integer(1,4095);
         }
+
         if(frame.canid >0x7FF)
             frame.ext =true;
         else

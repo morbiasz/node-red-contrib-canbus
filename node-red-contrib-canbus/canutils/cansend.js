@@ -30,9 +30,12 @@ module.exports = function(RED) {
 	this.canid=n.canid;
 	this.payload=n.payload;
 
-        var node = this;
+	frame.ext=n.ext;
+	frame.remote=n.remote;
 
-	node.warn("id="+this.canid+",channel="+this.channel);
+    var node = this;
+
+	console.log("id="+this.canid+",channel="+this.channel);
 	try {
 		var channel = can.createRawChannel(""+this.channel, true);
 	}catch(ex) {
@@ -61,17 +64,20 @@ module.exports = function(RED) {
 			if(msg.payload && msg.payload.indexOf("#")!=-1 && frame.canid==0)
 			{
 				frame.canid=parseInt(msg.payload.split("#")[0]);
-				if(frame.canid >0x7FF)
-					frame.ext =true;
+				var text = msg.payload.split("#")[1];
+				if(text[0]=="R")
+				{
+					console.log("Ramka remote");
+					frame.remote=true;
+				}
 				else
-					frame.ext =false;
-
-				frame.data=new Buffer(msg.payload.split("#")[1]);
+				{
+					console.log("Ramka zwykła: "+text.length);
+				}
+				frame.data=new Buffer(msg.payload.split("#")[1],'hex');
 				frame.dlc=frame.data.length;
 				if(frame.data.length == 0)
 					frame.remote=true;
-				else
-					frame.remote=false;
 			}
 			else if(msg.payload) 
 			{
@@ -80,8 +86,7 @@ module.exports = function(RED) {
 
 				if(frame.data.length == 0)
 					frame.remote=true;
-				else
-					frame.remote=false;
+
 			}
 			else if(this.payload)
 			{
@@ -96,24 +101,32 @@ module.exports = function(RED) {
 			}
 			else	 //no msg.payload and this.data is empty
 			{
-				frame.dlc=random.integer(1,8);
-				frame.data=new Buffer(frame.dlc);
-				for(var i=0;i<frame.dlc;i++)
-					frame.data[i]=random.integer(65,90);
+				frame.remote=true;
+				//frame.dlc=random.integer(1,8);
+				//frame.data=new Buffer(frame.dlc);
+				//for(var i=0;i<frame.dlc;i++)
+				   // frame.data[i]=random.integer(65,90);
 			//random.integer(1,255),random.integer(48,57),random.integer(96,121)
 			}
 			if(frame.canid==0)   //canid is not yet set
 			{
 				frame.canid=random.integer(1,4095);
 			}
-			node.warn("canid:"+frame.canid+",data:"+frame.data+",dlc:"+frame.dlc+",remote:"+frame.remote,+",ext:"+frame.ext);
+			// ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			if(frame.canid >0x7FF)
+				frame.ext =true;
+			else
+				frame.ext =false;
+
+
+			console.log("canid:"+frame.canid+",data:"+frame.data+",dlc:"+frame.dlc+",remote:"+frame.remote+",ext:"+frame.ext);
 			if(frame.dlc<=8)	//try-catch?
 				channel.send({ id: frame.canid,
 					ext: frame.ext,
 					remote: frame.remote,
 					data:frame.data });
 			else
-				node.warn("frame data is too long");
+				console.log("frame data is too long");
 		});
 		//TODO:support for extended frames, other cansend options
 	        this.on("close", function() {
