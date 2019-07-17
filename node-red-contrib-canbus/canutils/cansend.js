@@ -30,12 +30,12 @@ module.exports = function(RED) {
 	this.canid=n.canid;
 	this.payload=n.payload;
 
-	frame.ext=n.ext;
-	frame.remote=n.remote;
+	this.ext=n.ext;
+	this.remote=n.remote;
 
     var node = this;
 
-	console.log("id="+this.canid+",channel="+this.channel);
+	console.log("id="+this.canid+",channel="+this.channel+",ext="+this.ext);
 	try {
 		var channel = can.createRawChannel(""+this.channel, true);
 	}catch(ex) {
